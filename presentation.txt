@@ -1,0 +1,139 @@
+Our presentation topic is:
+
+Multi-Agent Collaboration: AutoGen and Microsoft Agent Framework
+
+We have divided the presentation into four parts. Each person will prepare their assigned section.
+
+Person 1: Introduction to Multi-Agent Collaboration
+
+- Introduction to AI and AI Agents
+- Agentic AI
+- Multi-Agent Systems
+- Multi-Agent Collaboration
+- Single-Agent vs Multi-Agent
+- Advantages, challenges and applications
+
+Person 2: AutoGen Framework
+
+- Introduction and purpose of AutoGen
+- AutoGen architecture
+- Core API, AgentChat API and Extensions API
+- Basic terminologies
+- Agent communication and collaboration patterns
+- AutoGen Studio
+- Advantages and limitations
+
+Person 3: Microsoft Agent Framework
+
+- Introduction to MAF
+- Why Microsoft introduced MAF
+- Relationship between AutoGen and Semantic Kernel
+- MAF architecture
+- Agent creation and communication
+- Workflow orchestration
+- State management, middleware and tools
+- Human-in-the-loop
+- Advantages and applications
+
+Person 4: Comparison and Practical Implementation
+
+- AutoGen vs Microsoft Agent Framework
+- AutoGen vs CrewAI vs LangGraph
+- Smart E-Commerce Order Management System
+- Product, Inventory, Order and Delivery Agents
+- Agent communication and coordination
+- Sequential Workflow
+- Conditional Routing
+- Feedback Loop
+- Termination Conditions
+- Practical demonstration
+- Future and conclusion
+
+Common Practical Example: Smart E-Commerce Order Management System
+
+We will use the same example throughout the presentation:
+
+1. Product Agent – Finds the requested product.
+2. Inventory Agent – Checks product availability.
+3. Order Agent – Processes the order.
+4. Delivery Agent – Arranges delivery.
+
+Each person should prepare approximately 12–13 minutes of presentation material. Use diagrams, practical examples and clear explanations. Also prepare for questions from the professor about your assigned section.
+
+
+
+*More details*
+Presentation: Multi-Agent Collaboration – AutoGen and Microsoft Agent Framework
+
+Person 1: Introduction to Multi-Agent Collaboration
+Duration: 12 minutes
+Prepare the following topics:
+Introduction to Artificial Intelligence.
+What is an AI Agent?
+What is Agentic AI?
+What is a Multi-Agent System?
+What is Multi-Agent Collaboration?
+Single-Agent vs Multi-Agent Systems.
+Advantages and challenges of Multi-Agent Systems.
+Real-world applications of Multi-Agent AI.
+Practical example: Introduce our Smart E-Commerce Order Management System and explain why we need multiple agents to manage online shopping orders.
+
+Person 2: AutoGen Framework
+Duration: 12 minutes
+Prepare the following topics:
+What is AutoGen?
+Why was AutoGen developed?
+Introduction to AutoGen architecture.
+Core API.
+AgentChat API.
+Extensions API.
+Basic AutoGen terminologies:
+Agent
+AssistantAgent
+Team
+GroupChat
+Messages
+Handoff
+Tools
+Termination Conditions
+Agent communication and collaboration patterns.
+AutoGen Studio.
+Advantages and limitations of AutoGen.
+Practical example: Explain how Product, Inventory, Order and Delivery agents can communicate and collaborate using AutoGen.
+
+Person 3: Microsoft Agent Framework (MAF)
+Duration: 13 minutes
+Prepare the following topics:
+What is Microsoft Agent Framework?
+Why did Microsoft introduce MAF?
+Relationship between AutoGen and Semantic Kernel.
+Introduction to MAF architecture.
+Agent creation and communication.
+Workflow orchestration.
+State management.
+Middleware.
+Tools and integrations.
+Human-in-the-loop.
+Advantages and applications of MAF.
+Practical example: Explain how Microsoft Agent Framework can coordinate our four e-commerce agents and manage their workflow.
+
+Person 4: Framework Comparison and Practical Implementation
+Duration: 13 minutes
+Prepare the following topics:
+AutoGen vs Microsoft Agent Framework.
+AutoGen vs CrewAI vs LangGraph.
+Architecture of Smart E-Commerce Order Management System.
+Explanation of four agents:
+Product Agent
+Inventory Agent
+Order Agent
+Delivery Agent
+Agent communication and coordination.
+Sequential Workflow.
+Conditional Routing.
+Feedback Loop.
+Termination Conditions.
+Practical demonstration.
+Future of Multi-Agent AI.
+Conclusion.
+Practical demonstration: Show how a customer places an order and how all four agents collaborate to complete the process.
