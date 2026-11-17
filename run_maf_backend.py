@@ -31,7 +31,9 @@ async def main():
         product = Agent(
             client=client, name="ProductAgent",
             instructions="Our shop sells: laptop, phone, headphones. "
-                         "Reply with ONLY the product name the customer wants.",
+                         "If the customer's message clearly asks for one of these, reply with ONLY "
+                         "that product name. If it does not (e.g. a greeting or small talk), reply "
+                         "with EXACTLY: NO_PRODUCT",
         )
         inventory = Agent(
             client=client, name="InventoryAgent",
@@ -52,15 +54,29 @@ async def main():
                          "ID or price. Never ask questions.",
         )
 
+        # ProductAgent runs alone first - plain SequentialBuilder has no
+        # built-in conditional branching, so this is how we stop a vague
+        # input like "hi" from being hallucinated into a fake order.
+        product_result = await product.run(task)
+        product_name = product_result.text.strip()
+
+        if product_name == "NO_PRODUCT":
+            emit("ProductAgent", "I didn't catch a specific product in that - we sell laptops, "
+                                  "phones, and headphones. What would you like to order?")
+            return
+        emit("ProductAgent", product_name)
+
         workflow = SequentialBuilder(
-            participants=[product, inventory, order, delivery],
+            participants=[inventory, order, delivery],
             intermediate_output_from="all_other",
             chain_only_agent_responses=True,
         ).build()
 
+        next_task = f"The customer wants: {product_name}. Original request: {task}"
+
         last_author = None
         accumulated = ""
-        async for event in workflow.run(task, stream=True):
+        async for event in workflow.run(next_task, stream=True):
             if event.type not in ("output", "intermediate") or not isinstance(event.data, AgentResponseUpdate):
                 continue
             update = event.data

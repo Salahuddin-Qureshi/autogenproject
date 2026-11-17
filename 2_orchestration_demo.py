@@ -20,7 +20,9 @@ async def main():
     # Each agent has ONE job
     product = AssistantAgent("ProductAgent", model_client=model,
         system_message="Our shop sells: laptop, phone, headphones. "
-                       "Reply with ONLY the product name the customer wants.")
+                       "If the customer's message clearly asks for one of these, reply with ONLY "
+                       "that product name. If it does not (e.g. a greeting or small talk), reply "
+                       "with EXACTLY: NO_PRODUCT")
     inventory = AssistantAgent("InventoryAgent", model_client=model, tools=tools,
         reflect_on_tool_use=True,
         system_message="Check stock with the check_stock tool. "
@@ -34,10 +36,16 @@ async def main():
                        "Never ask questions. End your message with DONE.")
 
     # The orchestrator: agents speak in turn (round robin)
-    # Stop when someone says DONE, or after 10 messages as a safety limit
+    # Stop when someone says DONE, when ProductAgent can't find a product
+    # (NO_PRODUCT - e.g. the customer just said "hi"), or after 10 messages
+    # as a safety limit.
     team = RoundRobinGroupChat(
         [product, inventory, order, delivery],
-        termination_condition=TextMentionTermination("DONE") | MaxMessageTermination(10),
+        termination_condition=(
+            TextMentionTermination("DONE")
+            | TextMentionTermination("NO_PRODUCT")
+            | MaxMessageTermination(10)
+        ),
     )
 
     # The customer request can be typed on the command line

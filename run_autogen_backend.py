@@ -26,7 +26,9 @@ async def main():
     product = AssistantAgent(
         "ProductAgent", model_client=model,
         system_message="Our shop sells: laptop, phone, headphones. "
-                        "Reply with ONLY the product name the customer wants.",
+                        "If the customer's message clearly asks for one of these, reply with ONLY "
+                        "that product name. If it does not (e.g. a greeting or small talk), reply "
+                        "with EXACTLY: NO_PRODUCT",
     )
     inventory = AssistantAgent(
         "InventoryAgent", model_client=model, tools=tools, reflect_on_tool_use=True,
@@ -47,14 +49,22 @@ async def main():
 
     team = RoundRobinGroupChat(
         [product, inventory, order, delivery],
-        termination_condition=TextMentionTermination("DONE") | MaxMessageTermination(10),
+        termination_condition=(
+            TextMentionTermination("DONE")
+            | TextMentionTermination("NO_PRODUCT")
+            | MaxMessageTermination(10)
+        ),
     )
 
     async for message in team.run_stream(task=task):
         source = getattr(message, "source", None)
         content = getattr(message, "content", None)
-        if source and isinstance(content, str) and content.strip():
-            print(json.dumps({"agent": source, "text": content}), flush=True)
+        if not source or not isinstance(content, str) or not content.strip():
+            continue
+        if source == "ProductAgent" and content.strip() == "NO_PRODUCT":
+            content = ("I didn't catch a specific product in that - we sell laptops, phones, "
+                       "and headphones. What would you like to order?")
+        print(json.dumps({"agent": source, "text": content}), flush=True)
 
 
 if __name__ == "__main__":

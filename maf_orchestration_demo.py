@@ -32,7 +32,9 @@ async def main():
             name="ProductAgent",
             instructions=(
                 "Our shop sells: laptop, phone, headphones. "
-                "Reply with ONLY the product name the customer wants."
+                "If the customer's message clearly asks for one of these, reply with ONLY "
+                "that product name. If it does not (e.g. a greeting or small talk), reply "
+                "with EXACTLY: NO_PRODUCT"
             ),
         )
         inventory = Agent(
@@ -63,25 +65,44 @@ async def main():
             ),
         )
 
-        # Step 3: the orchestrator - a graph, not a conversation. Order is
-        # guaranteed by SequentialBuilder, not by an LLM taking turns correctly.
+        task = " ".join(sys.argv[1:]) or "I want to buy a laptop, deliver to Sukkur."
+
+        # Step 3: ProductAgent runs ALONE first, as plain Python control flow
+        # decides what happens next - this is MAF's "functional" workflow
+        # style (native if/else), used here because plain SequentialBuilder
+        # has no built-in conditional branching: it always runs every
+        # participant. Without this, a vague input like "hi" would get
+        # hallucinated into a product and march through Inventory/Order/
+        # Delivery as if it were a real order.
+        print("[ProductAgent] ", end="", flush=True)
+        product_result = await product.run(task)
+        product_name = product_result.text.strip()
+        print(product_name)
+
+        if product_name == "NO_PRODUCT":
+            print("[ProductAgent] I didn't catch a specific product in that - we sell "
+                  "laptops, phones, and headphones. What would you like to order?")
+            return
+
+        # Step 4: the rest of the pipeline IS a graph - order is guaranteed
+        # by SequentialBuilder, not by hoping three LLMs take turns correctly.
         # chain_only_agent_responses=True: each agent sees only the PREVIOUS
         # agent's reply, not the whole history - tighter context than AutoGen's
         # shared group chat, and it keeps DeliveryAgent from just repeating OrderAgent.
         workflow = SequentialBuilder(
-            participants=[product, inventory, order, delivery],
+            participants=[inventory, order, delivery],
             intermediate_output_from="all_other",  # show every agent's step, not just the last
             chain_only_agent_responses=True,
         ).build()
 
-        task = " ".join(sys.argv[1:]) or "I want to buy a laptop, deliver to Sukkur."
+        next_task = f"The customer wants: {product_name}. Original request: {task}"
 
-        # Step 4: stream real token deltas as each agent produces them.
+        # Step 5: stream real token deltas as each agent produces them.
         # Each agent's stream ends with one extra chunk repeating the whole
         # message (not a delta) - skip it when it matches what we already printed.
         last_author = None
         accumulated = ""
-        async for event in workflow.run(task, stream=True):
+        async for event in workflow.run(next_task, stream=True):
             if event.type not in ("output", "intermediate") or not isinstance(event.data, AgentResponseUpdate):
                 continue
             update = event.data
