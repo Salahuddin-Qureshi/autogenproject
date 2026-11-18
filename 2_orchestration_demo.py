@@ -49,7 +49,7 @@ async def main():
     )
 
     # The customer request can be typed on the command line
-    task = " ".join(sys.argv[1:]) or "I want to buy a laptop, deliver to Sukkur."
+    task = " ".join(sys.argv[1:]) or "I want to buy a laptop, deliver to Karachi."
     await Console(team.run_stream(task=task))
 
 

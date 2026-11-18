@@ -2,5 +2,6 @@
 .venv/
 .venv_maf/
 .venv_gui/
+.venv_sk/
 __pycache__/
 *.pyc
