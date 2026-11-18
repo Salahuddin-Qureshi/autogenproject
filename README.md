@@ -1,5 +1,7 @@
 # Multi-Agent Collaboration: AutoGen + Semantic Kernel → Microsoft Agent Framework
 
+**Repo:** https://github.com/Salahuddin-Qureshi/autogenproject
+
 A hands-on companion to our class presentation *"Multi-Agent Collaboration: AutoGen and
 Microsoft Agent Framework."* Instead of just describing how Microsoft's new **Agent
 Framework (MAF)** grew out of **AutoGen** and **Semantic Kernel (SK)**, this repo builds
